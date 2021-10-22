@@ -55,13 +55,13 @@ resource "aws_instance" "tfe_node" {
   user_data = file("./templates/userdata.sh")
 }
 
-resource "aws_route53_record" "tfenodes" {
+resource "aws_route53_record" "tfenode" {
   count   = var.tfe_node_install
   zone_id = data.terraform_remote_state.foundation.outputs.dns_zone_id
-  name    = lookup(aws_instance.tfe_nodes.*.tags[count.index], "Name")
+  name    = lookup(aws_instance.tfe_node.*.tags[count.index], "Name")
   type    = "A"
   ttl     = "300"
-  records = [element(aws_instance.tfe_nodes.*.public_ip, count.index )]
-  #[aws_instance.tfe_nodes.public_ip]
+  records = [element(aws_instance.tfe_node.*.public_ip, count.index )]
+  #[aws_instance.tfe_node.public_ip]
 }
 
