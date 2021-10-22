@@ -34,7 +34,7 @@ data "template_file" "ansible_replicated" {
   vars = {
     tfe_password = var.tfe_password
     domain       = local.dns_domain
-    hostname     = lookup(aws_instance.tfe_nodes.*.tags[0], "Name")
+    hostname     = lookup(aws_instance.tfe_node.*.tags[0], "Name")
 
   }
 }
@@ -111,7 +111,7 @@ resource "null_resource" "license" {
   }
 
   provisioner "local-exec" {
-    comand = "echo ${local.lic_rli} > ${path.root}/ansible/roles/ptfe/files/license.rli"
+    command = "echo ${local.lic_rli} > ${path.root}/ansible/roles/ptfe/files/license.rli"
   }
 }
 
