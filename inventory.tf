@@ -9,7 +9,6 @@ data "template_file" "ansible_tfe_hosts" {
   }
 }
 
-
 data "template_file" "ansible_skeleton" {
   template = file("${path.root}/templates/ansible_skeleton.tpl")
 
@@ -19,7 +18,6 @@ data "template_file" "ansible_skeleton" {
 }
 
 resource "local_file" "ansible_inventory" {
-
   content  = data.template_file.ansible_skeleton.rendered
   filename = "${path.root}/ansible/inventory"
 }
@@ -35,7 +33,6 @@ data "template_file" "ansible_replicated" {
     tfe_password = var.tfe_password
     domain       = local.dns_domain
     hostname     = lookup(aws_instance.tfe_node.*.tags[0], "Name")
-
   }
 }
 
@@ -55,13 +52,12 @@ resource "random_string" "settings_backup_token" {
   special          = false
 }
 
-
 data "template_file" "ansible_settings" {
   template   = file("${path.root}/templates/settings.json.tpl")
   depends_on = [
                 aws_instance.tfe_node,
                 random_string.settings_backup_token
-  ]
+                ]
 
   vars = {
     tfe_encryption_key = var.tfe_encryption_key
@@ -72,7 +68,7 @@ data "template_file" "ansible_settings" {
 }
 
 resource "local_file" "ansible_settings" {
-  count      = var.tfe_node_install
+  #count      = var.tfe_node_install
   depends_on = [data.template_file.ansible_settings]
 
   content  = data.template_file.ansible_settings.rendered
@@ -119,7 +115,6 @@ resource "null_resource" "license" {
 ## here we copy the entire Ansible Playbook from the local executin entironment to the Bastionhost
 ##
 resource "null_resource" "cp_ansible" {
-
   depends_on = [
     local_file.ansible_inventory,
     local_file.ansible_replicated,
@@ -128,14 +123,13 @@ resource "null_resource" "cp_ansible" {
     null_resource.license
     ]
 
-
   triggers = {
     always_run = timestamp()
   }
 
   provisioner "file" {
     source      = "${path.root}/ansible"
-    destination = "~/"
+    destination = "~/ptfe"
 
     connection {
       type        = "ssh"
