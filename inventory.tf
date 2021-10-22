@@ -36,7 +36,7 @@ resource "null_resource" "provisioner" {
 
     connection {
       type        = "ssh"
-      host        = data.terraform_remote_state.foundation.outputs.bastionhost.public_ip
+      host        = data.terraform_remote_state.bastionhost.outputs.bastionhost_public_ip
       user        = var.ssh_user
       private_key = local.priv_key
       insecure    = true

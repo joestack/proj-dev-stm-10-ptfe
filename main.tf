@@ -28,8 +28,8 @@ resource "aws_instance" "tfe_node" {
   count                       = var.tfe_node_install
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
-  subnet_id                   = data.terraform_remote_state.bastionhost.outputs.bastionhost_subnet_id
-  private_ip                  = data.terraform_remote_state.bastionhost.outputs.tfenode_priv_ip
+  subnet_id                   = data.terraform_remote_state.foundation.outputs.bastionhost_subnet_id
+  private_ip                  = data.terraform_remote_state.foundation.outputs.tfenode_priv_ip
   associate_public_ip_address = "true"
   vpc_security_group_ids      = [data.terraform_remote_state.foundation.outputs.tfe_asg_id]
   key_name                    = var.pub_key
