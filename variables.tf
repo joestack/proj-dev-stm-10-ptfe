@@ -34,8 +34,19 @@ variable "pri_key" {
   description = "the base64 encoded private key to be used to access the bastion host and ansible nodes"
 }
 
+variable "tfe_rli" {}
+variable "tfe_password" {}
+variable "tfe_encryption_key" {}
+
+
+variable "email" {
+    description = "Email address to be used for certbot"
+    default     = "joern@hashicorp.com"
+}
 
 
 locals {
-  priv_key = base64decode(var.pri_key)
+  priv_key   = base64decode(var.pri_key)
+  lic_rli    = base64decode(var.tfe_rli)
+  dns_domain = data.terraform_remote_state.foundation.outputs.dns_domain
 }
