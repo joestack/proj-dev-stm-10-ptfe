@@ -1,18 +1,19 @@
 data "template_file" "ansible_tfe_hosts" {
-  count      = var.tfe_node_install
+  #count      = var.tfe_node_install
   template   = file("${path.root}/templates/ansible_hosts.tpl")
   depends_on = [aws_instance.tfe_node]
 
   vars = {
-    node_name    = aws_instance.tfe_node.*.tags[count.index]["Name"]
+    node_name    = aws_instance.tfe_node.*.tags[0]["Name"]
     ansible_user = var.ssh_user
-    ip           = element(aws_instance.tfe_node.*.private_ip, count.index)
+    #ip           = element(aws_instance.tfe_node.*.private_ip, count.index)
+    ip           = aws_instance.tfe_node.*.private_ip[0]
   }
 }
 
 
 data "template_file" "ansible_skeleton" {
-  count      = var.tfe_node_install
+  #count      = var.tfe_node_install
   template = file("${path.root}/templates/ansible_skeleton.tpl")
 
   vars = {
@@ -31,7 +32,8 @@ resource "null_resource" "provisioner" {
   }
 
   provisioner "file" {
-    content     = data.template_file.ansible_skeleton.*.rendered[0]
+    #content     = data.template_file.ansible_skeleton.*.rendered[0]
+    content     = data.template_file.ansible_skeleton.rendered
     destination = "~/inventory"
 
     connection {
@@ -43,5 +45,7 @@ resource "null_resource" "provisioner" {
     }
   }
 }
+
+### we have copied the inventory file to the bastion host
 
 
