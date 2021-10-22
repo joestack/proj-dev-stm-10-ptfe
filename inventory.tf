@@ -31,7 +31,7 @@ resource "null_resource" "provisioner" {
   }
 
   provisioner "file" {
-    content     = data.template_file.ansible_skeleton.*.rendered
+    content     = data.template_file.ansible_skeleton.*.rendered[0]
     destination = "~/inventory"
 
     connection {
